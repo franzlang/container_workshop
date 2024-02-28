@@ -2,7 +2,7 @@ Bootstrap: docker
 From: ubuntu:24.04
 
 %post
-    apt-get update & apt-get upgrade
+    apt-get update
     apt-get install -y cowsay
 
 %environment
