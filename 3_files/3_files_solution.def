@@ -1,12 +1,11 @@
 Bootstrap: docker
-From: ubuntu:24.04
+From: alpine:latest
 
 %help
-
     An Apptainer container for trying basic interactive shell commands
 
 %files
-    /home/fl1047774/Desktop/container_workshop/3_files/hello_world.txt /opt/hello_world.txt
+    ./hello_world.txt /opt/hello_world.txt
 
 %runscript
     cat /opt/hello_world.txt

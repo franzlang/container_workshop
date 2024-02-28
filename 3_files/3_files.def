@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:24.04
+From: alpine:latest
 
 %help
     An Apptainer container for copying a file from the host system into the container
