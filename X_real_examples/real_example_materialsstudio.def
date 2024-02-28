@@ -1,0 +1,55 @@
+Bootstrap: docker
+From: ubuntu:20.04
+
+%help
+
+    A singularity container for MaterialsStudio2021 21.1
+
+%files
+
+    #Copy MaterialStudio2021.tar into container. This contains the necessary installation files. 
+    /root/MaterialsStudio2021.tar /opt/MaterialsStudio2021.tar
+
+%post -c /bin/bash
+    
+    rm -f /bin/sh
+    ln -s /bin/bash /bin/sh
+    apt-get -y update
+    apt-get -y upgrade
+    DEBIAN_FRONTEND=noninteractive apt install -y perl perl-modules bc cpio rpm2cpio csh locales libgssapi-krb5-2 libfreetype6 libxrender1 libfontconfig1 libxext6 expect
+    locale-gen en_GB.UTF-8
+    update-locale LANG=en_GB.UTF-8
+    cd /opt/
+    tar -xzvf MaterialsStudio2021.tar
+    echo "#!/usr/bin/expect
+    set timeout -1
+    spawn ./MaterialsStudio2021/install --lproot=/etc/BIOVIA/ --installroot=/opt/BIOVIA/
+    expect \"Please enter the username under which you wish to run the Gateway service.\"
+    send -- \"biovia\r\"
+    expect \"The user 'biovia' does not currently exist on the system. Do you wish to create it (Y/n)?\"
+    send -- \"Y\r\"
+    expect \"Please enter the default group name for the new account\"
+    send -- \"biovia\r\"
+    expect \"Would you like to specify an alternative Gateway port number (default is 18888)\"
+    send -- \"N\r\"
+    expect \"you wish to configure security settings before starting. (Y/n)\"
+    send -- \"Y\r\"
+    expect \"99) Finished with license configuration\r\"
+    send -- \"99\r\"
+    expect eof" >> expect_script.sh
+    chmod +x expect_script.sh
+    mkdir /var/empty
+    ./expect_script.sh
+    touch /opt/BIOVIA/MaterialsStudio21.1/bin/mpivars.sh
+    rm -rf MaterialsStudio*
+    rm -f expect_script.sh
+
+%environment
+
+    export LD_LIBRARY_PATH=/opt/BIOVIA/MaterialsStudio21.1/lib/:/etc/BIOVIA/BIOVIA_LicensePack/linux/lib/:$LD_LIBRARY_PATH
+    export PATH=/opt/BIOVIA/MaterialsStudio21.1/bin/:/etc/BIOVIA/BIOVIA_LicensePack/linux/bin/:$PATH
+    export BIOVIA_LIC_PACK_DIR=/etc/BIOVIA/BIOVIA_LicensePack/
+
+%runscript
+
+    exec "$@"

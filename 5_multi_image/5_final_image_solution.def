@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: ./5_base_image.sif
+
+%post
+  ln -s /root/hello /bin/hello
+
+%runscript
+  hello

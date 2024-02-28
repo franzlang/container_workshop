@@ -1,0 +1,2 @@
+# example of a multi-stage build that compiles a binary in one stage before copying and using it in a follow-on stage
+# add names for the stages in the right places and add a %postscript to run the compiled binary 

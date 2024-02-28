@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: ##specify local image to be used
+
+%post
+  ##create a softlink to the compiled file at /root/hello to somewhere on the PATH
+
+%runscript
+  ##run the compiled `hello` program

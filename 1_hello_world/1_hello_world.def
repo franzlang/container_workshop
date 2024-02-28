@@ -1,0 +1,9 @@
+Bootstrap: docker
+From: ##choose an image, e.g. Ubuntu
+
+%help
+    An Apptainer container for trying basic interactive shell commands
+
+%runscript
+   ##add a shell command to print "hello world"
+

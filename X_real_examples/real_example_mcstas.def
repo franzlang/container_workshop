@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: centos:7
+
+%help
+ 
+    A singularity container for McStas v2.5
+
+%post
+    
+    yum install -y wget epel-release
+    wget --no-check-certificate http://packages.mccode.org/rpm/mccode.repo -P /etc/yum.repos.d
+    echo -e "[isis-rhel]\nbaseurl = http://yum.isis.rl.ac.uk/rhel/7/x86_64\ngpgcheck = 0\nname = ISIS Software Repository for Redhat Enterprise Linux 7 - x86_64" > /etc/yum.repos.d/isis-rhel.repo
+    yum update -y
+    yum upgrade -y
+    yum install -y mesa-dri-drivers firefox exo xdg-utils perl-PDL mcstas-suite-python-2.5 mcstas-tools-perl-2.5 mcstas-tools-matlab-mcplot-2.5 mcstas-ncrystal-2.5 mcstas-manuals-2.5 nexus nexus-devel
+    echo "application/pdf=firefox.desktop;" >> /usr/share/applications/mimeapps.list 
+    yum group install -y "Development Tools"
+    wget https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.2.tar.gz
+    gunzip -c openmpi-4.1.2.tar.gz | tar xf -
+    cd openmpi-4.1.2
+    ./configure --prefix=/usr/local
+    make all install
+
+%runscript
+
+    /bin/bash -ic /usr/local/mcstas/2.5/bin/mcgui

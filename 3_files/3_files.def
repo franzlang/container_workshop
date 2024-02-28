@@ -1,0 +1,11 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%help
+    An Apptainer container for copying a file from the host system into the container
+
+%files
+    #put your files here
+
+%runscript
+    #put your command here

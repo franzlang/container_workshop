@@ -1,0 +1,35 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%help
+    An apptainer container for Chimera (classic), an extensible molecular modelling system.
+
+    Before building, it is necessary to download the Chimera (classic) .bin from their website:
+    https://www.cgl.ucsf.edu/chimera/download.html. Once done, move the downloaded .bin file
+    to the same folder as this definition and rename it to chimera.bin.
+
+    Note: Chimera (classic) is no longer maintained or updated. The last release was Dec 2021.
+    So, there shouldnt be much need to upgrade this container, if at all.
+
+%files
+    chimera.bin /usr/local/bin/chimera.bin
+
+%post
+    apt update && apt upgrade -y
+    apt install wget -y
+    apt install libfreetype-dev ffmpeg libsm6 libxext6 libxft2 -y
+    apt install libegl-mesa0 libegl1 libegl1-mesa libglu1-mesa libopengl0 libxtst6 -y # Needed for virtualGL
+    cd /usr/local/bin
+    chmod +x chimera.bin
+    echo "/opt/UCSF/Chimera" | ./chimera.bin
+
+    #Install VirtualGL to allow using the GUI on GPU machines
+    wget https://sourceforge.net/projects/virtualgl/files/3.1/virtualgl_3.1_amd64.deb/download -O virtualgl_3.1_amd64.deb
+    dpkg -i virtualgl_3.1_amd64.deb
+    vglserver_config -config +s +f -t 
+
+%runscript
+    /opt/UCSF/Chimera/bin/chimera
+
+%apprun virtualgl
+    vglrun /opt/UCSF/Chimera/bin/chimera

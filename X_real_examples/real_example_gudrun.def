@@ -1,0 +1,62 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%help
+
+    An Apptainer container for the latest version of Gudrun
+    The Gudrun GUI can launch a xterm with gnuplot running in it. In order for this to work,
+    xterm and gnuplot must also be installed on the host system.
+
+%files
+
+    # Copy updated gudrun startup files into container
+    NIMRODstartup.txt /opt/
+    SLSstartup.txt /opt/
+    SANDALSJune2015Detector.calib /opt/
+
+%post
+
+    apt update -y
+    apt upgrade -y
+    DEBIAN_FRONTEND=noninteractive apt install -y tzdata
+    # Build dependencies
+    apt install -y git wget gcc g++ gfortran libhdf5-dev make cmake
+    # Runtime dependencies
+    apt install -y openjdk-8-jre libhdf5-dev gnuplot xterm
+
+    mkdir /opt/gudrun
+    cd /opt/gudrun
+    git clone https://github.com/disorderedmaterials/Gudrun.git
+    mkdir /opt/gudrun/Gudrun/build
+    cd /opt/gudrun/Gudrun/build
+    #NOTE: If this container gets built again, try using the DGUDPY_COMPATIBILITY flag: https://stfc.atlassian.net/browse/IDJSD-2210?focusedCommentId=39460
+    cmake ../ -DBUILD_SZIP:bool=true
+    make install
+    rm -rf /opt/gudrun/Gudrun/build
+
+    # Move updated startup files to right location (see %files section)
+    mv /opt/NIMRODstartup.txt /opt/gudrun/Gudrun/StartupFiles/NIMROD/
+    mv /opt/SLSstartup.txt /opt/gudrun/Gudrun/StartupFiles/SLS/
+    mv /opt/SANDALSJune2015Detector.calib /opt/gudrun/Gudrun/StartupFiles/SLS/
+
+    # set up GudrunN GUI config
+    cp /opt/gudrun/Gudrun/GudrunN_linux.syspar /opt/gudrun/Gudrun/GudrunGUI.sysparN
+    sed -i 's/rungnuplot.sh/rungnuplotXquartz.sh/' /opt/gudrun/Gudrun/GudrunX_linux.syspar
+    sed -i 's/rungnuplotplot.sh/rungnuplotplotXquartz.sh/' /opt/gudrun/Gudrun/GudrunX_linux.syspar
+    cp /opt/gudrun/Gudrun/GudrunX_linux.syspar /opt/gudrun/Gudrun/GudrunGUI.sysparX
+
+    chmod +x /opt/gudrun/Gudrun/*.sh
+    chmod -R +x /opt/gudrun/Gudrun/bin/
+
+    # Gnuplot/xterm depend on qt5. The qt5 library needs to have a tag stripped to work on CentOS7 hosts.
+    strip --remove-section=.note.ABI-tag /usr/lib/x86_64-linux-gnu/libQt5Core.so.5
+
+%runscript
+
+    cd /opt/gudrun/Gudrun
+    exec /opt/gudrun/Gudrun/gudrunn.sh "$@"
+
+%apprun gudrunx
+
+    cd /opt/gudrun/Gudrun
+    exec /opt/gudrun/Gudrun/gudrunx.sh "$@"

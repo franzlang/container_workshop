@@ -1,0 +1,26 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%help
+
+	# An apptainer for Jmol, an open source Java viewer for chemical structures in 3D with features for chemicals, crystals, materials and biomolecules
+
+%post
+
+	# Install Jmol
+
+	apt update && apt upgrade -y
+	apt install -y wget
+	cd /opt/
+	wget https://sourceforge.net/projects/jmol/files/Jmol/Version%2016.1/Jmol%2016.1.37/Jmol-16.1.37-binary.tar.gz
+	DEBIAN_FRONTEND=noninteractive apt install -y default-jre
+	tar -xvf Jmol-16.1.37-binary.tar.gz
+	rm Jmol-16.1.37-binary.tar.gz
+	
+%environment
+	
+	export LD_PRELOAD=
+
+%runscript
+	
+	exec java -jar /opt/jmol-16.1.37/Jmol.jar "$@"

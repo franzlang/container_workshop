@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%post
+    apt-get update
+    apt-get install -y cowsay
+
+%environment
+    export LC_ALL=C
+    export PATH=$PATH:/usr/games/
+
+%apprun ##name this something
+    #make this run a cowsay command
+
+%apprun ##name this something else
+    #make this run a cowthink command

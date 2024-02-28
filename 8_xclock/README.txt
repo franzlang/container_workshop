@@ -1,0 +1,1 @@
+Simply build the container using the provided definition file, then run it and see how a graphical element is automatically launched.

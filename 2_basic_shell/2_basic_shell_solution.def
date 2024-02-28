@@ -1,0 +1,17 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%help
+    An Apptainer container for trying basic interactive shell commands
+
+%post
+    apt-get update
+    apt-get install -y cowsay
+
+%environment
+    export LC_ALL=C
+    export PATH=$PATH:/usr/games/
+
+%runscript
+    cowsay "hello world!"
+

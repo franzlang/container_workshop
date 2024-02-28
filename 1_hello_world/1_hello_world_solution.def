@@ -1,0 +1,9 @@
+Bootstrap: docker
+From: alpine:latest
+
+%help
+    An Apptainer container for trying basic interactive shell commands
+
+%runscript
+   echo "hello world!"
+
