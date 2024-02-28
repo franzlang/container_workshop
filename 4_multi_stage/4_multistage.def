@@ -18,16 +18,16 @@ Stage: ##give this some name
   }
 EOF
 
-  #compile binary
+  #compile binary at /root/hello
   go build -o hello hello.go
 
 
-# Install binary into the final image
+# create final minimal image with the compiled binary but not build dependencies
 Bootstrap: docker
 From: alpine:latest
 Stage: ##give this some other name
 
-# install binary from stage one
+# copy compiled binary from previous stage
 %files from ##give this the same name as before
   ##specify the file to be copied from the previous stage
 
