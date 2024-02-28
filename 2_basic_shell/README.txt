@@ -5,7 +5,7 @@ apptainer shell --writable --fakeroot 2_basic_shell.sif
 # try installing something inside the container, e.g. cowsay:
 Apptainer>apt-get install -y cowsay
 # and then try to run it inside the container via
-Apptainer>/user/games/cowsay "hello world!"
+Apptainer>/usr/games/cowsay "hello world!"
 
 # now update the .def file to make changes to:
 # - install the cowsay package using the %post section
