@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ##choose an image, e.g. Ubuntu
+From: ##choose an image, e.g. Ubuntu or Alpine
 
 %help
     An Apptainer container for trying basic interactive shell commands
